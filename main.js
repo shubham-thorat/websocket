@@ -4,7 +4,7 @@ const FileManager = require('./file_manager');
 const Results = require('./results');
 const readline = require('readline');
 const WebSocketClient = require('websocket').client;
-
+require('dotenv').config()
 class Benchmarker {
 
     /**
@@ -92,12 +92,12 @@ class Benchmarker {
          * @type {Object}
          */
         this.benchmark_obj = {
-            websocket_address: process.env.WEBSOCKET_ADDRESS || "127.0.0.1",
+            websocket_address: process.env.WEBSOCKET_ADDRESS || "cb-stage-ws-alb-454351763.ap-south-1.elb.amazonaws.com",
             websocket_port: process.env.WEBSOCKET_PORT || 8080,
-            connection_interval: process.env.ADD_CONNECTIONS || 100,
+            connection_interval: process.env.ADD_CONNECTIONS || 1,
             request_interval: process.env.REQUESTS || 50,
         };
-
+        // 43.204.212.92
         /**
          * Instance of the FileManager. This will be set once the user is prompted for
          * the current language being tested
@@ -142,7 +142,7 @@ class Benchmarker {
         });
 
         // continue running the programming asynchronously
-        let manage_file = async function() {
+        let manage_file = async function () {
             // assign the benchmark folder by conjoining the benchmark results root directory with the language name
             self.benchmark_folder = self.benchmark_results_directory + '/' + self.benchmark_language + "/";
 
@@ -160,14 +160,14 @@ class Benchmarker {
             await self.run_program();
         };
 
-        if(this.benchmark_language === undefined){
+        if (this.benchmark_language === undefined) {
             // prompt the user for the language being benchmarked and wait for a response
             rl.question('Language: ', async (benchmark_language) => {
 
                 self.benchmark_language = benchmark_language;
                 manage_file();
             });
-        }else{
+        } else {
             manage_file();
         }
 
@@ -247,10 +247,10 @@ class Benchmarker {
      *
      * @return {Promise} Resolves when a connection is made to the websocket server, otherwise terminates
      */
-    async serverCheck(){
+    async serverCheck() {
 
         // connect to the websocket server
-        let url = "ws://"+this.benchmark_obj.websocket_address+":"+this.benchmark_obj.websocket_port;
+        let url = "ws://" + this.benchmark_obj.websocket_address + ":" + this.benchmark_obj.websocket_port;
         let client = new WebSocketClient();
         client.connect(url);
 
@@ -273,5 +273,5 @@ class Benchmarker {
 }
 
 let benchmarker = new Benchmarker();
-let check_server = async function(){await benchmarker.serverCheck()};
-check_server().then( () => { benchmarker.prompt(); });
+let check_server = async function () { await benchmarker.serverCheck() };
+check_server().then(() => { benchmarker.prompt(); });

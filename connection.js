@@ -91,7 +91,7 @@ module.exports = class Connection {
         this.benchmark_progress_obj = benchmark_progress_obj;
 
         // redefine the push function for the last_count array to shift the data with each entry
-        this.last_count.push = function (){
+        this.last_count.push = function () {
             if (this.length >= 20) {
                 this.shift();
             }
@@ -104,7 +104,7 @@ module.exports = class Connection {
      *
      * @returns {Promise} resolves once all requests have been completed, or the process times out
      */
-    sendData(){
+    sendData() {
 
         // track the number of successful requests
         this.count = 0;
@@ -122,10 +122,10 @@ module.exports = class Connection {
                 if (this.connection !== undefined) {
 
                     // create a JSON string containing the current request number
-                    let data = JSON.stringify({'c': i});
+                    let data = JSON.stringify({ 'message_count': i });
 
                     // set the starting timestamp for the request to now
-                    this.times[i] = {'start':Date.now()};
+                    this.times[i] = { 'start': Date.now() };
 
                     // send the request to the websocket server
                     this.connection.sendUTF(data);
@@ -135,7 +135,7 @@ module.exports = class Connection {
                 }
 
                 // if the request being sent is that last in the loop..
-                if(i === this.benchmark_obj.request_interval - 1) {
+                if (i === this.benchmark_obj.request_interval - 1) {
                     const self = this;
                     var timer = 0;
 
@@ -152,12 +152,12 @@ module.exports = class Connection {
                         // 3. The number of successful requests is the same as the number of successful requests from
                         //    20 seconds ago AND more than 90% of requests were successful or the request process has
                         //    been running for 5 minutes
-                        if ( readyToResolve
+                        if (readyToResolve
                             || ((self.count / self.benchmark_obj.request_interval) === 1)
                             || (self.count === self.last_count[0]
                                 && (((self.count / self.benchmark_obj.request_interval) > .9)
                                     || (timer++ >= 100)
-                            ))) {
+                                ))) {
 
                             // stop checking if the request process has finished, and resolve with the times array
                             clearInterval(finishCount);
@@ -206,7 +206,7 @@ module.exports = class Connection {
                 self.connection_fails++;
 
                 // retry connection (wrapped in an async function)
-                let connect = async function() { self.connect(); };
+                let connect = async function () { self.connect(); };
                 connect().then(() => {
                     //self.connection_progress_obj.counter++;
                     resolve();
@@ -250,18 +250,18 @@ module.exports = class Connection {
                     let data = JSON.parse(message.utf8Data);
 
                     // ensure incoming message has an already existing corresponding request in the times array
-                    if(self.times[data['c']] !== undefined) {
+                    if (self.times[data['message_count']] !== undefined) {
 
                         // ensure the corresponding request in the times array does not already contain any data from
                         // the websocket server.
                         // This can happen if the server sends the 0 response twice, once when the client connects,
                         // and again each round. For the sake of simple math, we just keep the first one.
-                        if (self.times[data['c']]['received'] === undefined
-                            && self.times[data['c']]['finish'] === undefined) {
+                        if (self.times[data['message_count']]['received'] === undefined
+                            && self.times[data['message_count']]['finish'] === undefined) {
 
                             // store the corresponding timestamps in the times array
-                            self.times[data['c']]['received'] = data['ts'];
-                            self.times[data['c']]['finish'] = Date.now();
+                            self.times[data['message_count']]['received'] = data['ts'];
+                            self.times[data['message_count']]['finish'] = Date.now();
 
                             // increment the successful request counters by 1
                             self.benchmark_progress_obj.counter++;
@@ -293,11 +293,11 @@ module.exports = class Connection {
             });
 
             // define the websocket server url. Ex: ws://127.0.0.1:8080
-            let url = "ws://"+this.benchmark_obj.websocket_address+":"+this.benchmark_obj.websocket_port;
+            let url = "ws://" + this.benchmark_obj.websocket_address + ":" + this.benchmark_obj.websocket_port;
 
             // set the first timestamp request in the times array to now, as we will be expecting a response from the
             // server once connected
-            this.times[0] = {'start':Date.now()};
+            this.times[0] = { 'start': Date.now() };
 
             // connect to the websocket server
             this.client.connect(url);
@@ -310,7 +310,7 @@ module.exports = class Connection {
      * Websockets require a "heartbeat" in order to keep the conneciton open.
      * @returns {void}
      */
-    ping(){
+    ping() {
 
         // allows this to be used inside nested functions
         let self = this
@@ -321,7 +321,7 @@ module.exports = class Connection {
             // create a JSON string containing the current request number
             // we use 0 as to not interer with any unsigned ints on the server end, as well as any possible
             // pening responses from the server
-            let data = JSON.stringify({'c': 0});
+            let data = JSON.stringify({ 'message_count': 0 });
 
             // send the request to the websocket server
             self.connection.sendUTF(data);
@@ -333,7 +333,7 @@ module.exports = class Connection {
      * Closes the connection to the websocket server
      * @returns {void}
      */
-    close(){
+    close() {
         this.keep_alive = false;
         clearInterval(this.pingTimer);
         this.connection.close();
