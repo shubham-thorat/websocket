@@ -1,5 +1,17 @@
 const WebSocketClient = require('websocket').client;
 const clientstatsd = require('./statsD')
+
+let extraData = new Array(3000)
+
+extraData.fill(JSON.stringify({
+    "id": 1,
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "age": 30,
+    "address": "123 Main St, City",
+    "phone": "+1 (555) 555-5555",
+    "is_active": "john.doe@example.com",
+}))
 module.exports = class Connection {
 
     /**
@@ -121,12 +133,21 @@ module.exports = class Connection {
 
                 if (this.connection !== undefined) {
 
-                    // create a JSON string containing the current request number
-                    let data = JSON.stringify({ 'message_count': i });
+
 
                     // set the starting timestamp for the request to now
                     this.times[i] = { 'start': Date.now() };
                     clientstatsd.timing('request_send', 1)
+
+                    // create a JSON string containing the current request number
+                    let data = JSON.stringify({
+                        'message_count': i,
+                        'key': 'websocket_key',
+                        'value': 'websocket_value',
+                        'extras': {
+                            'random': extraData
+                        }
+                    });
                     // send the request to the websocket server
                     this.connection.sendUTF(data);
 
