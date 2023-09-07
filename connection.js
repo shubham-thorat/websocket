@@ -262,7 +262,13 @@ module.exports = class Connection {
                             // store the corresponding timestamps in the times array
                             self.times[data['message_count']]['received'] = data['received_time'];
                             self.times[data['message_count']]['finish'] = Date.now();
+                            // console.log("START TIME: ", self.times[data['message_count']]['start'])
+                            // console.log("RECEIVED TIME: ", self.times[data['message_count']]['received'])
+                            // console.log("FINISH TIME: ", self.times[data['message_count']]['finish'])
                             clientstatsd.timing('response_time', self.times[data['message_count']]['finish'] - self.times[data['message_count']]['start'])
+
+                            clientstatsd.timing('client_to_server_time', self.times[data['message_count']]['received'] - self.times[data['message_count']]['start'])
+                            clientstatsd.timing('server_to_client_time', self.times[data['message_count']]['finish'] - self.times[data['message_count']]['received'])
                             // increment the successful request counters by 1
                             self.benchmark_progress_obj.counter++;
                             self.count++;
