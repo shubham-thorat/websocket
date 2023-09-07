@@ -1,7 +1,7 @@
 const WebSocketClient = require('websocket').client;
 const clientstatsd = require('./statsD')
 
-let extraData = new Array(3000)
+let extraData = new Array(2500)
 
 extraData.fill(JSON.stringify({
     "id": 1,
@@ -12,6 +12,7 @@ extraData.fill(JSON.stringify({
     "phone": "+1 (555) 555-5555",
     "is_active": "john.doe@example.com",
 }))
+//size = 0.2 kb * 10 * 150
 module.exports = class Connection {
 
     /**
