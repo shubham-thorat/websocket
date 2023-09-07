@@ -159,7 +159,7 @@ class Benchmarker {
             // benchmark the rest of the program
             await self.run_program();
         };
-
+        this.benchmark_language = 'node'
         if (this.benchmark_language === undefined) {
             // prompt the user for the language being benchmarked and wait for a response
             rl.question('Language: ', async (benchmark_language) => {
