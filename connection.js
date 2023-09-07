@@ -1,5 +1,5 @@
 const WebSocketClient = require('websocket').client;
-
+const clientstatsd = require('./statsD')
 module.exports = class Connection {
 
     /**
@@ -126,7 +126,7 @@ module.exports = class Connection {
 
                     // set the starting timestamp for the request to now
                     this.times[i] = { 'start': Date.now() };
-
+                    clientstatsd.timing('request_send', 1)
                     // send the request to the websocket server
                     this.connection.sendUTF(data);
 
@@ -245,7 +245,7 @@ module.exports = class Connection {
                  * Message Received Event
                  */
                 connection.on('message', function (message) {
-
+                    clientstatsd.timing('response_received', 1)
                     // convert the incoming JSON string to an Object
                     let data = JSON.parse(message.utf8Data);
                     // console.log("DATA RECEIVED : ", data)
@@ -262,7 +262,7 @@ module.exports = class Connection {
                             // store the corresponding timestamps in the times array
                             self.times[data['message_count']]['received'] = data['received_time'];
                             self.times[data['message_count']]['finish'] = Date.now();
-
+                            clientstatsd.timing('response_time', self.times[data['message_count']]['finish'] - self.times[data['message_count']]['start'])
                             // increment the successful request counters by 1
                             self.benchmark_progress_obj.counter++;
                             self.count++;
