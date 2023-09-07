@@ -17,7 +17,7 @@ module.exports = class ConnectionManager {
      * @param benchmark_progress_obj {Object} An object storing data on all the requests currently being made each round
      * @returns void
      */
-    constructor(benchmark_obj, connection_obj, connection_progress_obj, benchmark_progress_obj){
+    constructor(benchmark_obj, connection_obj, connection_progress_obj, benchmark_progress_obj) {
 
         /**
          * Array tracking the number of clients connected each round to determine is the connection process has finished
@@ -120,14 +120,15 @@ module.exports = class ConnectionManager {
      * @param round {number} The current round being ran in the benchmarking process
      * @returns {Promise} resolves when all requests have been completed/timeout
      */
-     sendRequests(round) {
-         // clear the times array which contains the previous rounds data
+    sendRequests(round) {
+        // clear the times array which contains the previous rounds data
         this.connection_obj.times = new Array(this.benchmark_obj.connection_interval * (round + 1));
 
         return new Promise((resolve, reject) => {
 
             //loop through the clients array in the connection object, and start the request process
             for (let i = 0; i < this.connection_obj.clients.length; i++) {
+                // console.log("LOOPING THORUGH CLIENT : ", this.connection_obj.clients[i])
                 this.connection_obj.clients[i].sendData().then((time) => {
                     this.connection_obj.times[i] = time;
 

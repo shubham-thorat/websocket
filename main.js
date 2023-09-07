@@ -92,7 +92,7 @@ class Benchmarker {
          * @type {Object}
          */
         this.benchmark_obj = {
-            websocket_address: process.env.WEBSOCKET_ADDRESS || "cb-stage-ws-alb-454351763.ap-south-1.elb.amazonaws.com",
+            websocket_address: process.env.WEBSOCKET_ADDRESS || "127.0.0.1",
             websocket_port: process.env.WEBSOCKET_PORT || 8080,
             connection_interval: process.env.ADD_CONNECTIONS || 1,
             request_interval: process.env.REQUESTS || 50,
@@ -251,6 +251,7 @@ class Benchmarker {
 
         // connect to the websocket server
         let url = "ws://" + this.benchmark_obj.websocket_address + ":" + this.benchmark_obj.websocket_port;
+        console.log("URL: ", url)
         let client = new WebSocketClient();
         client.connect(url);
 

@@ -12,7 +12,7 @@ module.exports = class Results {
      * @param request_interval {number} The number of requests to sound out per connected client per round
      * @returns void
      */
-    constructor(file_manager, request_interval){
+    constructor(file_manager, request_interval) {
         /**
          * Instance of the FileManager class
          * @type {FileManager}
@@ -66,7 +66,7 @@ module.exports = class Results {
         times.forEach((client_time, key) => {
             // for each client, loop through all the requests the client made
             client_time.forEach(trip => {
-
+                // console.log("startTime : ", trip['start'], "endTIme: ", trip['finish'], " received: ", trip['received'])
                 // check if the request completed successfully
                 if (trip['start'] !== undefined && trip['received'] !== undefined && trip['finish'] !== undefined) {
 
@@ -104,7 +104,8 @@ module.exports = class Results {
 
         // calculate the average round trip time
         let average_rt = total_rt / count;
-
+        // console.log("stop time: ", stop_time)
+        // console.log("start time: ", start_time)
         // calculate the total time for the round
         let time_elapse = stop_time - start_time;
 

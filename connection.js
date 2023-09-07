@@ -248,7 +248,7 @@ module.exports = class Connection {
 
                     // convert the incoming JSON string to an Object
                     let data = JSON.parse(message.utf8Data);
-
+                    // console.log("DATA RECEIVED : ", data)
                     // ensure incoming message has an already existing corresponding request in the times array
                     if (self.times[data['message_count']] !== undefined) {
 
@@ -260,7 +260,7 @@ module.exports = class Connection {
                             && self.times[data['message_count']]['finish'] === undefined) {
 
                             // store the corresponding timestamps in the times array
-                            self.times[data['message_count']]['received'] = data['ts'];
+                            self.times[data['message_count']]['received'] = data['received_time'];
                             self.times[data['message_count']]['finish'] = Date.now();
 
                             // increment the successful request counters by 1
