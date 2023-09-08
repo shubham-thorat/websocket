@@ -135,6 +135,7 @@ module.exports = class Connection {
             for (let i = 0; i < this.benchmark_obj.request_interval; i++) {
 
                 if (i % rps === 0) {
+                    console.log('Sleeping for 1sec')
                     sleep.sleep(1)
                 }
                 // ensure the connection is defines before sending, otherwise resolve
