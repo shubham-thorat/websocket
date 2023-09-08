@@ -1,5 +1,8 @@
 const WebSocketClient = require('websocket').client;
 const clientstatsd = require('./statsD')
+const sleep = require('sleep')
+require('dotenv').config()
+
 
 let extraData = new Array(2500)
 
@@ -126,16 +129,17 @@ module.exports = class Connection {
         this.times = [];
 
         return new Promise((resolve, reject) => {
-
+            console.log("REQUEST_INTERVAL: ", this.benchmark_obj.request_interval)
             // send a total number of requests equal to the specified request interval
+            const rps = process.env.RATE || 1000
             for (let i = 0; i < this.benchmark_obj.request_interval; i++) {
 
+                if (i % rps === 0) {
+                    sleep.sleep(1)
+                }
                 // ensure the connection is defines before sending, otherwise resolve
 
                 if (this.connection !== undefined) {
-
-
-
                     // set the starting timestamp for the request to now
                     this.times[i] = { 'start': Date.now() };
                     clientstatsd.timing('request_send', 1)
