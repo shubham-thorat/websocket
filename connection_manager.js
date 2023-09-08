@@ -1,4 +1,5 @@
 const Connection = require('./connection');
+const writeToFile = require('./helper');
 
 /**
  * Creates, manages, and closes all the websocket clients
@@ -125,11 +126,12 @@ module.exports = class ConnectionManager {
         this.connection_obj.times = new Array(this.benchmark_obj.connection_interval * (round + 1));
 
         return new Promise((resolve, reject) => {
+
             //loop through the clients array in the connection object, and start the request process
             for (let i = 0; i < this.connection_obj.clients.length; i++) {
-                // console.log("CLIENTS : ", this.connection_obj.clients[i])
+                writeToFile(`\nREQUEST SENDING FOR CLIENT : ${i}\n`)
                 // console.log("LOOPING THORUGH CLIENT : ", this.connection_obj.clients[i])
-                this.connection_obj.clients[i].sendData().then((time) => {
+                this.connection_obj.clients[i].sendData(i).then((time) => {
                     this.connection_obj.times[i] = time;
                     // resolve after all requests have been completed/timeout
                     if (!this.connection_obj.times.includes(undefined)) {

@@ -1,6 +1,7 @@
-const WebSocketClient = require('websocket').client;
+const WebSocketClient = require('websocket').client
 const clientstatsd = require('./statsD')
-const sleep = require('sleep')
+const sleep = require('./sleep')
+const writeToFile = require('./helper')
 require('dotenv').config()
 
 
@@ -120,7 +121,7 @@ module.exports = class Connection {
      *
      * @returns {Promise} resolves once all requests have been completed, or the process times out
      */
-    sendData() {
+    sendData(clientIdx) {
 
         // track the number of successful requests
         this.count = 0;
@@ -130,76 +131,107 @@ module.exports = class Connection {
 
         return new Promise((resolve, reject) => {
             // console.log("REQUEST_INTERVAL: ", this.benchmark_obj.request_interval)
+            // writeToFile(`\nTOTAL_REQUEST PER CLIENT : ${this.benchmark_obj.request_interval}`)
             // send a total number of requests equal to the specified request interval
-            const rps = process.env.RATE || 1000
-            for (let i = 0; i < this.benchmark_obj.request_interval; i++) {
+            let rps = process.env.RATE || 1000
+            let remaining = this.benchmark_obj.request_interval % rps
+            let rounds = this.benchmark_obj.request_interval / rps
+            rounds += remaining === 0 ? 0 : 1
+            // console.log("TOTAL ROUNDS : ", rounds)
+            let round_no = 0
+            let cnt = 0;
+            const finish = setInterval(() => {
+                writeToFile(`INSIDE SETINTERVAL : client : ${clientIdx} round: ${round_no}`)
+                round_no += 1
+                // console.log("ROUND NO : ", round_no)
+                let N = rps
+                // let N = this.benchmark_obj.request_interval
 
-                if (i % rps === 0) {
-                    console.log('Sleeping for 1sec')
-                    sleep.sleep(1)
-                }
-                // ensure the connection is defines before sending, otherwise resolve
+                // writeToFile(`EXECUTING ROUND: ${round_no} CLIENT_NO: ${clientIdx}\n`)
+                for (let i = 0; i < N; i++) {
+                    cnt += 1
+                    // ensure the connection is defines before sending, otherwise resolve
+                    if (this.connection !== undefined) {
+                        // set the starting timestamp for the request to now
+                        this.times[cnt] = { 'start': Date.now() };
+                        clientstatsd.timing('request_send', 1)
 
-                if (this.connection !== undefined) {
-                    // set the starting timestamp for the request to now
-                    this.times[i] = { 'start': Date.now() };
-                    clientstatsd.timing('request_send', 1)
-
-                    // create a JSON string containing the current request number
-                    let data = JSON.stringify({
-                        'message_count': i,
-                        'key': 'websocket_key',
-                        'value': 'websocket_value',
-                        'extras': {
-                            'random': extraData
-                        }
-                    });
-                    // send the request to the websocket server
-                    this.connection.sendUTF(data);
-
-                } else {
-                    resolve();
-                }
-
-                // if the request being sent is that last in the loop..
-                if (i === this.benchmark_obj.request_interval - 1) {
-                    const self = this;
-                    var timer = 0;
-
-                    // ... check once per second if the function should resolve
-                    const finishCount = setInterval(function () {
-
-                        // The function should resolve if:
-                        // 1. There are no requests with a "finish" index which is undefined
-                        let readyToResolve = self.times.every(function (time, message_index) {
-                            return time['finish'] !== undefined;
+                        // create a JSON string containing the current request number
+                        let data = JSON.stringify({
+                            'message_count': cnt,
+                            'key': 'websocket_key',
+                            'value': 'websocket_value',
+                            'extras': {
+                                // 'random': extraData
+                            }
                         });
 
-                        // 2. The count tracker of successful requests is equal to the number of requests sent
-                        // 3. The number of successful requests is the same as the number of successful requests from
-                        //    20 seconds ago AND more than 90% of requests were successful or the request process has
-                        //    been running for 5 minutes
-                        if (readyToResolve
-                            || ((self.count / self.benchmark_obj.request_interval) === 1)
-                            || (self.count === self.last_count[0]
-                                && (((self.count / self.benchmark_obj.request_interval) > .9)
-                                    || (timer++ >= 100)
-                                ))) {
+                        // console.log(`SENDING REQUEST CLIENT_NO: ${clientIdx} REQUEST_NO: ${i}`)
+                        writeToFile(`SENDING REQUEST CLIENT_NO: ${clientIdx} ROUND: ${round_no} REQUEST_NO: ${i}\n`)
 
-                            // stop checking if the request process has finished, and resolve with the times array
-                            clearInterval(finishCount);
-                            resolve(self.times);
-                        }
+                        // send the request to the websocket server
+                        this.connection.sendUTF(data);
 
-                        // Track the count of successful request.
-                        // The array stores the last 20 checks (20 seconds).
-                        // If the number of successful requests is not changing, we can assume no more
-                        // will be coming in.
-                        self.last_count.push(self.count);
+                    } else {
+                        console.log("ENTER INSIDE RESOLVE")
+                        resolve();
+                    }
+                    // console.log("INSIDE ", round_no, " ", i)
+                    // if the request being sent is that last in the loop..
 
-                    }, 1000);
+                    // writeToFile(`ROUNDNO: ${round_no} ind: ${i}`)
+                    if (round_no === rounds && i === N - 1) {
+                        // if (i === this.benchmark_obj.request_interval - 1) {
+                        // console.log("INSIDE FOR LOOP")
+                        writeToFile(`\nLAST ROUND : ${round_no}\n`)
+                        const self = this;
+                        var timer = 0;
+
+                        // clearInterval(finish)
+                        // resolve()
+
+                        // ... check once per second if the function should resolve
+                        const finishCount = setInterval(function () {
+
+                            //     // The function should resolve if:
+                            //     // 1. There are no requests with a "finish" index which is undefined
+                            let readyToResolve = self.times.every(function (time, message_index) {
+                                return time['finish'] !== undefined;
+                            });
+
+                            //     // 2. The count tracker of successful requests is equal to the number of requests sent
+                            //     // 3. The number of successful requests is the same as the number of successful requests from
+                            //     //    20 seconds ago AND more than 90% of requests were successful or the request process has
+                            //     //    been running for 5 minutes
+                            if (readyToResolve
+                                || ((self.count / self.benchmark_obj.request_interval) === 1)
+                                || (self.count === self.last_count[0]
+                                    && (((self.count / self.benchmark_obj.request_interval) > .9)
+                                        || (timer++ >= 100)
+                                    ))) {
+
+                                // stop checking if the request process has finished, and resolve with the times array
+                                clearInterval(finishCount);
+                                // console.log(`RESOLVING FOR CLIENT ${clientIdx}`)
+                                resolve(self.times);
+                                clearInterval(finish)
+                            }
+
+                            //     console.log(`INSIDE SET INTERVAL ${clientIdx}`)
+                            //     // Track the count of successful request.
+                            //     // The array stores the last 20 checks (20 seconds).
+                            //     // If the number of successful requests is not changing, we can assume no more
+                            //     // will be coming in.
+                            self.last_count.push(self.count);
+
+                        }, 1000);
+                        // }
+                    }
+
                 }
-            }
+            }, 1000);
+
+            // sleep.sleep(1)
         });
     }
 
@@ -275,6 +307,7 @@ module.exports = class Connection {
                     clientstatsd.timing('response_received', 1)
                     // convert the incoming JSON string to an Object
                     let data = JSON.parse(message.utf8Data);
+                    writeToFile(`RESPONSE RECEIVED : ${data['message_count']} \n`)
                     // console.log("DATA RECEIVED : ", data)
                     // ensure incoming message has an already existing corresponding request in the times array
                     if (self.times[data['message_count']] !== undefined) {
