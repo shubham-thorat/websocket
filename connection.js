@@ -129,7 +129,7 @@ module.exports = class Connection {
         this.times = [];
 
         return new Promise((resolve, reject) => {
-            console.log("REQUEST_INTERVAL: ", this.benchmark_obj.request_interval)
+            // console.log("REQUEST_INTERVAL: ", this.benchmark_obj.request_interval)
             // send a total number of requests equal to the specified request interval
             const rps = process.env.RATE || 1000
             for (let i = 0; i < this.benchmark_obj.request_interval; i++) {
