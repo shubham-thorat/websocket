@@ -182,6 +182,7 @@ module.exports = class Connection {
                     console.log("TOTAL: ", rounds, " ROUND NO:", round_no, "INDEX : ", i, " N", N)
                     // writeToFile(`ROUNDNO: ${round_no} ind: ${i}`)
                     if (round_no === rounds && i === N - 1) {
+                        console.log("INSIDE ROUND")
                         // if (i === this.benchmark_obj.request_interval - 1) {
                         // console.log("INSIDE FOR LOOP")
                         writeToFile(`\nLAST ROUND : ${round_no}\n`)
