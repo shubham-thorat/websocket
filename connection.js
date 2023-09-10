@@ -231,6 +231,9 @@ module.exports = class Connection {
                     }
 
                 }
+                if (round_no === rounds) {
+                    clearInterval(finish)
+                }
             }, 1000);
 
             // sleep.sleep(1)
