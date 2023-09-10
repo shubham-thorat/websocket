@@ -137,7 +137,7 @@ module.exports = class Connection {
             let remaining = this.benchmark_obj.request_interval % rps
             let rounds = this.benchmark_obj.request_interval / rps
             rounds += remaining === 0 ? 0 : 1
-            // console.log("TOTAL ROUNDS : ", rounds)
+            console.log("TOTAL ROUNDS : ", rounds)
             let round_no = 0
             let cnt = 0;
             const finish = setInterval(() => {
