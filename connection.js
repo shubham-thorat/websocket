@@ -179,7 +179,7 @@ module.exports = class Connection {
                     }
                     // console.log("INSIDE ", round_no, " ", i)
                     // if the request being sent is that last in the loop..
-
+                    console.log("TOTAL: ", rounds, " ROUND NO:", round_no, "INDEX : ", i, " N", N)
                     // writeToFile(`ROUNDNO: ${round_no} ind: ${i}`)
                     if (round_no === rounds && i === N - 1) {
                         // if (i === this.benchmark_obj.request_interval - 1) {
