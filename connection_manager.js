@@ -129,7 +129,7 @@ module.exports = class ConnectionManager {
 
             //loop through the clients array in the connection object, and start the request process
             for (let i = 0; i < this.connection_obj.clients.length; i++) {
-                writeToFile(`\nREQUEST SENDING FOR CLIENT : ${i}\n`)
+                // writeToFile(`\nREQUEST SENDING FOR CLIENT : ${i}\n`)
                 // console.log("LOOPING THORUGH CLIENT : ", this.connection_obj.clients[i])
                 this.connection_obj.clients[i].sendData(i).then((time) => {
                     this.connection_obj.times[i] = time;

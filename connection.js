@@ -141,7 +141,7 @@ module.exports = class Connection {
             let round_no = 0
             let cnt = 0;
             const finish = setInterval(() => {
-                writeToFile(`INSIDE SETINTERVAL : client : ${clientIdx} round: ${round_no}`)
+                // writeToFile(`INSIDE SETINTERVAL : client : ${clientIdx} round: ${round_no}`)
                 round_no += 1
                 // console.log("ROUND NO : ", round_no)
                 let N = rps
@@ -167,13 +167,13 @@ module.exports = class Connection {
                         });
 
                         // console.log(`SENDING REQUEST CLIENT_NO: ${clientIdx} REQUEST_NO: ${i}`)
-                        writeToFile(`SENDING REQUEST CLIENT_NO: ${clientIdx} ROUND: ${round_no} REQUEST_NO: ${i}\n`)
+                        // writeToFile(`SENDING REQUEST CLIENT_NO: ${clientIdx} ROUND: ${round_no} REQUEST_NO: ${i}\n`)
 
                         // send the request to the websocket server
                         this.connection.sendUTF(data);
 
                     } else {
-                        console.log("ENTER INSIDE RESOLVE")
+                        // console.log("ENTER INSIDE RESOLVE")
                         resolve();
                     }
                     // console.log("INSIDE ", round_no, " ", i)
@@ -183,7 +183,7 @@ module.exports = class Connection {
                     if (round_no === rounds && i === N - 1) {
                         // if (i === this.benchmark_obj.request_interval - 1) {
                         // console.log("INSIDE FOR LOOP")
-                        writeToFile(`\nLAST ROUND : ${round_no}\n`)
+                        // writeToFile(`\nLAST ROUND : ${round_no}\n`)
                         const self = this;
                         var timer = 0;
 
@@ -307,7 +307,7 @@ module.exports = class Connection {
                     clientstatsd.timing('response_received', 1)
                     // convert the incoming JSON string to an Object
                     let data = JSON.parse(message.utf8Data);
-                    writeToFile(`RESPONSE RECEIVED : ${data['message_count']} \n`)
+                    // writeToFile(`RESPONSE RECEIVED : ${data['message_count']} \n`)
                     // console.log("DATA RECEIVED : ", data)
                     // ensure incoming message has an already existing corresponding request in the times array
                     if (self.times[data['message_count']] !== undefined) {

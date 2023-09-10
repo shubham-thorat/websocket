@@ -1,3 +1,5 @@
+const fs = require('fs')
+
 /**
  * Calculates the results of each round. Results include the time elapse and success rate of the processes
  *
@@ -24,6 +26,29 @@ module.exports = class Results {
          * @type {number}
          */
         this.request_interval = request_interval;
+    }
+
+    calculatePercentile(values, percentile) {
+
+        if (values.length === 0) {
+            console.error("Latency array is empty")
+            return undefined;
+        }
+
+        const index = (percentile / 100) * (values.length - 1);
+
+        if (Number.isInteger(index)) {
+            return values[index];
+        } else {
+            const lowerIndex = Math.floor(index);
+            const upperIndex = Math.ceil(index);
+
+            const lowerValue = values[lowerIndex];
+            const upperValue = values[upperIndex];
+
+            const interpolationFactor = index - lowerIndex;
+            return lowerValue + (upperValue - lowerValue) * interpolationFactor;
+        }
     }
 
     /**
@@ -61,6 +86,7 @@ module.exports = class Results {
 
         // the count of total number to requests that were successful
         let count = 0;
+        let latencies = []
 
         // loop through all the clients that made requests each round
         times.forEach((client_time, key) => {
@@ -82,6 +108,7 @@ module.exports = class Results {
 
                     // determine the trips round-trip time
                     let trip_time = trip['finish'] - trip['start'];
+                    latencies.push(trip['finish'] - trip['start'])
 
                     // determine if the trips round-trip time is the longest
                     if (trip_time > longest_rt) {
@@ -101,6 +128,10 @@ module.exports = class Results {
                 }
             })
         });
+        latencies.sort(function (a, b) { return a - b })
+        let percent_50 = this.calculatePercentile(latencies, 50)
+        let percent_90 = this.calculatePercentile(latencies, 90)
+        let percent_99 = this.calculatePercentile(latencies, 99)
 
         // calculate the average round trip time
         let average_rt = total_rt / count;
@@ -121,15 +152,30 @@ module.exports = class Results {
             "time": time_elapse,
             "longest": longest_rt,
             "shortest": shortest_rt,
-            "average": average_rt,
-            "connection_time": connection_time
+            "average": average_rt.toFixed(3),
+            "connection_time": connection_time,
+            "50th_percentile": percent_50.toFixed(3),
+            "90th_percentile": percent_90.toFixed(3),
+            "99th_percentile": percent_99.toFixed(3)
         };
 
+        console.log("OUTPUT: ", data)
+
         // send data to the FileManager to be saved
-        this.file_manager.saveDataToFile(data).then(() => {
-            return new Promise((resolve, reject) => {
-                resolve();
-            });
-        });
+        // this.file_manager.saveDataToFile(data).then(() => {
+        //     return new Promise((resolve, reject) => {
+        //         resolve();
+        //     });
+        // });
+        const output_file = 'ws_output.json'
+        let outputjson = fs.readFileSync(output_file, "utf-8");
+        if (outputjson === '') {
+            outputjson = '[]'
+        }
+        let result = JSON.parse(outputjson)
+        // console.log("outputFile", result)
+        result.push(data)
+        fs.writeFileSync(output_file, JSON.stringify(result), 'utf-8')
+
     }
 };
