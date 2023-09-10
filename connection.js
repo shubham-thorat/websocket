@@ -143,13 +143,14 @@ module.exports = class Connection {
             const finish = setInterval(() => {
                 // writeToFile(`INSIDE SETINTERVAL : client : ${clientIdx} round: ${round_no}`)
                 round_no += 1
-                // console.log("ROUND NO : ", round_no)
+                console.log("ROUND NO : ", round_no)
                 let N = rps
                 // let N = this.benchmark_obj.request_interval
 
                 // writeToFile(`EXECUTING ROUND: ${round_no} CLIENT_NO: ${clientIdx}\n`)
                 for (let i = 0; i < N; i++) {
                     cnt += 1
+                    console.log("ROUND: ", round_no, "INDEX: ", i)
                     // ensure the connection is defines before sending, otherwise resolve
                     if (this.connection !== undefined) {
                         // set the starting timestamp for the request to now
