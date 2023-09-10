@@ -137,13 +137,13 @@ module.exports = class Connection {
             let remaining = this.benchmark_obj.request_interval % rps
             let rounds = this.benchmark_obj.request_interval / rps
             rounds += remaining === 0 ? 0 : 1
-            console.log("TOTAL ROUNDS : ", rounds)
+            // console.log("TOTAL ROUNDS : ", rounds)
             let round_no = 0
             let cnt = 0;
             const finish2 = setInterval(() => {
                 // writeToFile(`INSIDE SETINTERVAL : client : ${clientIdx} round: ${round_no}`)
                 round_no += 1
-                console.log("ROUND NO : ", round_no)
+                // console.log("ROUND NO : ", round_no)
                 let N = rps
                 // let N = this.benchmark_obj.request_interval
 
@@ -179,10 +179,10 @@ module.exports = class Connection {
                     }
                     // console.log("INSIDE ", round_no, " ", i)
                     // if the request being sent is that last in the loop..
-                    console.log("TOTAL: ", rounds, " ROUND NO:", round_no, "INDEX : ", i, " N", N)
+                    // console.log("TOTAL: ", rounds, " ROUND NO:", round_no, "INDEX : ", i, " N", N)
                     // writeToFile(`ROUNDNO: ${round_no} ind: ${i}`)
                     if (round_no === rounds && i === N - 1) {
-                        console.log("INSIDE ROUND")
+                        // console.log("INSIDE ROUND")
                         // if (i === this.benchmark_obj.request_interval - 1) {
                         // console.log("INSIDE FOR LOOP")
                         writeToFile(`\nLAST ROUND : ${round_no}\n`)
