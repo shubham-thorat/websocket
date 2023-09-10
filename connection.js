@@ -162,7 +162,7 @@ module.exports = class Connection {
                             'key': 'websocket_key',
                             'value': 'websocket_value',
                             'extras': {
-                                // 'random': extraData
+                                'random': extraData
                             }
                         });
 
@@ -183,7 +183,7 @@ module.exports = class Connection {
                     if (round_no === rounds && i === N - 1) {
                         // if (i === this.benchmark_obj.request_interval - 1) {
                         // console.log("INSIDE FOR LOOP")
-                        // writeToFile(`\nLAST ROUND : ${round_no}\n`)
+                        writeToFile(`\nLAST ROUND : ${round_no}\n`)
                         const self = this;
                         var timer = 0;
 
