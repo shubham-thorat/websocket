@@ -140,7 +140,7 @@ module.exports = class Connection {
             console.log("TOTAL ROUNDS : ", rounds)
             let round_no = 0
             let cnt = 0;
-            const finish = setInterval(() => {
+            const finish2 = setInterval(() => {
                 // writeToFile(`INSIDE SETINTERVAL : client : ${clientIdx} round: ${round_no}`)
                 round_no += 1
                 console.log("ROUND NO : ", round_no)
@@ -216,7 +216,7 @@ module.exports = class Connection {
                                 clearInterval(finishCount);
                                 // console.log(`RESOLVING FOR CLIENT ${clientIdx}`)
                                 resolve(self.times);
-                                clearInterval(finish)
+                                clearInterval(finish2)
                             }
 
                             //     console.log(`INSIDE SET INTERVAL ${clientIdx}`)
@@ -227,13 +227,14 @@ module.exports = class Connection {
                             self.last_count.push(self.count);
 
                         }, 1000);
+                        clearInterval(finish2)
                         // }
                     }
 
                 }
-                if (round_no === rounds) {
-                    clearInterval(finish)
-                }
+                // if (round_no === rounds) {
+                //     clearInterval(finish)
+                // }
             }, 1000);
 
             // sleep.sleep(1)
