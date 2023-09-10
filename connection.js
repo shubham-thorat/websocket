@@ -150,7 +150,7 @@ module.exports = class Connection {
                 // writeToFile(`EXECUTING ROUND: ${round_no} CLIENT_NO: ${clientIdx}\n`)
                 for (let i = 0; i < N; i++) {
                     cnt += 1
-                    console.log("ROUND: ", round_no, "INDEX: ", i)
+                    // console.log("ROUND: ", round_no, "INDEX: ", i)
                     // ensure the connection is defines before sending, otherwise resolve
                     if (this.connection !== undefined) {
                         // set the starting timestamp for the request to now
