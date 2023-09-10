@@ -176,7 +176,7 @@ module.exports = class Results {
         let result = JSON.parse(outputjson)
         // console.log("outputFile", result)
         result.push(data)
-        fs.writeFileSync(output_file, JSON.stringify(result), 'utf-8')
+        fs.writeFileSync(output_file, JSON.stringify(result, null, 2), 'utf-8')
 
     }
 };

@@ -5,17 +5,17 @@ const writeToFile = require('./helper')
 require('dotenv').config()
 
 
-let extraData = new Array(2500)
+// let extraData = new Array(2500)
 
-extraData.fill(JSON.stringify({
-    "id": 1,
-    "name": "John Doe",
-    "email": "john.doe@example.com",
-    "age": 30,
-    "address": "123 Main St, City",
-    "phone": "+1 (555) 555-5555",
-    "is_active": "john.doe@example.com",
-}))
+// extraData.fill(JSON.stringify({
+//     "id": 1,
+//     "name": "John Doe",
+//     "email": "john.doe@example.com",
+//     "age": 30,
+//     "address": "123 Main St, City",
+//     "phone": "+1 (555) 555-5555",
+//     "is_active": "john.doe@example.com",
+// }))
 //size = 0.2 kb * 10 * 150
 module.exports = class Connection {
 
@@ -135,8 +135,7 @@ module.exports = class Connection {
             // send a total number of requests equal to the specified request interval
             let rps = process.env.RATE || 1000
             let remaining = this.benchmark_obj.request_interval % rps
-            let rounds = this.benchmark_obj.request_interval / rps
-            rounds += remaining === 0 ? 0 : 1
+            let rounds = Math.ceil(this.benchmark_obj.request_interval / rps)
             // console.log("TOTAL ROUNDS : ", rounds)
             let round_no = 0
             let cnt = 0;
@@ -162,9 +161,9 @@ module.exports = class Connection {
                             'message_count': cnt,
                             'key': 'websocket_key',
                             'value': 'websocket_value',
-                            'extras': {
-                                'random': extraData
-                            }
+                            // 'extras': {
+                            //     'random': extraData
+                            // }
                         });
 
                         // console.log(`SENDING REQUEST CLIENT_NO: ${clientIdx} REQUEST_NO: ${i}`)
