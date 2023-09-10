@@ -143,9 +143,10 @@ module.exports = class Results {
         // output statistics to console
         console.log("Count: " + count + "/" + (this.request_interval * client_length) + " (" + count / (this.request_interval * client_length) * 100 + "%) " + " | Time Elapse: " + time_elapse);
         console.log("Longest Trip: " + longest_rt + " | Shortest Trip: " + shortest_rt + " | Average Trip: " + average_rt);
-
+        const rate = process.env.RATE || 1000
         let data = {
             "clients": client_length,
+            "rate": rate,
             "count": count,
             "total": (this.request_interval * client_length),
             "percentage": count / (this.request_interval * client_length) * 100 + "%",
