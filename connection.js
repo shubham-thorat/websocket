@@ -2,21 +2,33 @@ const WebSocketClient = require('websocket').client
 const clientstatsd = require('./statsD')
 const sleep = require('./sleep')
 const writeToFile = require('./helper')
+const sp = require('./schemapack');
 require('dotenv').config()
 
 
-// let extraData = new Array(50)
+const playerSchema = sp.build({
+    c: 'uint32',
+    ts: 'string',
+    txnTyp: 'string',
+    exch: 'string',
+    qty: 'uint32',
+    sym: 'string',
+    prc: 'float32',
+    odTyp: 'string',
+    tag: 'string',
+    source: 'string',
+    mktType: 'string',
+    val: 'string',
+    segmt: 'string',
+    trprc: 'float32',
+    var: 'string',
+    pdt: 'string',
+    disqty: 'int16',
+    tarprc: 'float32'
+})
 
-// extraData.fill(JSON.stringify({
-//     "id": 1,
-//     "name": "John Doe",
-//     "email": "john.doe@example.com",
-//     "age": 30,
-//     "address": "123 Main St, City",
-//     "phone": "+1 (555) 555-5555",
-//     "is_active": "john.doe@example.com",
-// }))
-//size = 0.2 kb * 10 * 50
+
+
 module.exports = class Connection {
 
     /**
@@ -135,7 +147,7 @@ module.exports = class Connection {
             // send a total number of requests equal to the specified request interval
             let rps = process.env.RATE || 1000
             let remaining = this.benchmark_obj.request_interval % rps
-            let rounds = Math.ceil((this.benchmark_obj.request_interval * 10) / rps)
+            let rounds = Math.ceil((this.benchmark_obj.request_interval * 20) / rps)
             // console.log("TOTAL ROUNDS : ", rounds)
             let round_no = 0
             let cnt = 0;
@@ -143,7 +155,7 @@ module.exports = class Connection {
                 // writeToFile(`INSIDE SETINTERVAL : client : ${clientIdx} round: ${round_no}`)
                 round_no += 1
                 // console.log("ROUND NO : ", round_no)
-                let N = rps / 10
+                let N = rps / 20
                 // let N = this.benchmark_obj.request_interval
 
                 // writeToFile(`EXECUTING ROUND: ${round_no} CLIENT_NO: ${clientIdx}\n`)
@@ -155,22 +167,44 @@ module.exports = class Connection {
                         // set the starting timestamp for the request to now
                         this.times[cnt] = { 'start': Date.now() };
                         clientstatsd.timing('request_send', 1)
-
+                        const data = {
+                            'c': cnt,
+                            'ts': '0',
+                            'txnTyp': 'B',
+                            'exch': 'NSE',
+                            'qty': 1000,
+                            'sym': 'IDBI',
+                            'prc': 1011.46,
+                            'odTyp': 'L',
+                            'tag': 'Sample',
+                            'source': 'M',
+                            'mktType': 'N',
+                            'val': 'IOC',
+                            'segmt': 'E',
+                            'trprc': 1022.56,
+                            'var': 'AMO',
+                            'pdt': 'CNC',
+                            'disqty': 100,
+                            'tarprc': 1100.03
+                        }
+                        let buffer = playerSchema.encode(data)
+                        // console.log("buffer : ", buffer)
                         // create a JSON string containing the current request number
-                        let data = JSON.stringify({
-                            'message_count': cnt,
-                            'key': 'websocket_key',
-                            'value': 'websocket_value',
-                            // 'extras': {
-                            //     'random': extraData
-                            // }
-                        });
+
+                        // let data = JSON.stringify({
+                        //     'message_count': cnt,
+                        //     'key': 'websocket_key',
+                        //     'value': 'websocket_value',
+                        //     // 'extras': {
+                        //     //     'random': extraData
+                        //     // }
+                        // });
 
                         // console.log(`SENDING REQUEST CLIENT_NO: ${clientIdx} REQUEST_NO: ${i}`)
                         // writeToFile(`SENDING REQUEST CLIENT_NO: ${clientIdx} ROUND: ${round_no} REQUEST_NO: ${i}\n`)
 
                         // send the request to the websocket server
-                        this.connection.sendUTF(data);
+                        this.connection.sendUTF(buffer);
 
                     } else {
                         // console.log("ENTER INSIDE RESOLVE")
@@ -234,8 +268,8 @@ module.exports = class Connection {
                 // if (round_no === rounds) {
                 //     clearInterval(finish)
                 // }
-            },100);
-        // }, 1000);
+            }, 50);
+            // }, 1000);
 
             // sleep.sleep(1)
         });
@@ -311,30 +345,31 @@ module.exports = class Connection {
                  */
                 connection.on('message', function (message) {
                     clientstatsd.timing('response_received', 1)
+                    console.log("MESSAGE", message)
                     // convert the incoming JSON string to an Object
                     let data = JSON.parse(message.utf8Data);
                     // writeToFile(`RESPONSE RECEIVED : ${data['message_count']} \n`)
                     // console.log("DATA RECEIVED : ", data)
                     // ensure incoming message has an already existing corresponding request in the times array
-                    if (self.times[data['message_count']] !== undefined) {
+                    if (self.times[data['c']] !== undefined) {
 
                         // ensure the corresponding request in the times array does not already contain any data from
                         // the websocket server.
                         // This can happen if the server sends the 0 response twice, once when the client connects,
                         // and again each round. For the sake of simple math, we just keep the first one.
-                        if (self.times[data['message_count']]['received'] === undefined
-                            && self.times[data['message_count']]['finish'] === undefined) {
+                        if (self.times[data['c']]['received'] === undefined
+                            && self.times[data['c']]['finish'] === undefined) {
 
                             // store the corresponding timestamps in the times array
-                            self.times[data['message_count']]['received'] = data['received_time'];
-                            self.times[data['message_count']]['finish'] = Date.now();
+                            self.times[data['c']]['received'] = data['received_time'];
+                            self.times[data['c']]['finish'] = Date.now();
                             // console.log("START TIME: ", self.times[data['message_count']]['start'])
                             // console.log("RECEIVED TIME: ", self.times[data['message_count']]['received'])
                             // console.log("FINISH TIME: ", self.times[data['message_count']]['finish'])
-                            clientstatsd.timing('response_time', self.times[data['message_count']]['finish'] - self.times[data['message_count']]['start'])
+                            clientstatsd.timing('response_time', self.times[data['c']]['finish'] - self.times[data['c']]['start'])
 
-                            clientstatsd.timing('client_to_server_time', self.times[data['message_count']]['received'] - self.times[data['message_count']]['start'])
-                            clientstatsd.timing('server_to_client_time', self.times[data['message_count']]['finish'] - self.times[data['message_count']]['received'])
+                            clientstatsd.timing('client_to_server_time', self.times[data['c']]['received'] - self.times[data['c']]['start'])
+                            clientstatsd.timing('server_to_client_time', self.times[data['c']]['finish'] - self.times[data['c']]['received'])
                             // increment the successful request counters by 1
                             self.benchmark_progress_obj.counter++;
                             self.count++;
