@@ -350,5 +350,37 @@
     "50th_percentile": "74.000",
     "90th_percentile": "211.000",
     "99th_percentile": "371.000"
+  },
+  {
+    "schemapack": false,
+    "clients": 10,
+    "rate": "2000",
+    "count": 435900,
+    "total": 300000,
+    "percentage": "145.3%",
+    "time": 98938,
+    "longest": 11978,
+    "shortest": 2,
+    "average": "4353.619",
+    "connection_time": 18,
+    "50th_percentile": "2768.000",
+    "90th_percentile": "10412.000",
+    "99th_percentile": "11176.000"
+  },
+  {
+    "schemapack": false,
+    "clients": 100,
+    "rate": "200",
+    "count": 3009900,
+    "total": 3000000,
+    "percentage": "100.33000000000001%",
+    "time": 667850,
+    "longest": 3009,
+    "shortest": 0,
+    "average": "244.481",
+    "connection_time": 109,
+    "50th_percentile": "149.000",
+    "90th_percentile": "591.000",
+    "99th_percentile": "1335.000"
   }
 ]
