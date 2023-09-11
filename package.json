@@ -5,6 +5,7 @@
     "json2csv": "^5.0.5",
     "node-statsd": "^0.1.1",
     "progress": "^1.1.8",
-    "websocket": "^1.0.33"
+    "websocket": "^1.0.33",
+    "ws": "^8.14.1"
   }
 }

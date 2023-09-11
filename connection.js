@@ -1,4 +1,5 @@
 const WebSocketClient = require('websocket').client
+const WebSocket = require('ws').WebSocket;
 const clientstatsd = require('./statsD')
 const sleep = require('./sleep')
 const writeToFile = require('./helper')
@@ -286,10 +287,12 @@ module.exports = class Connection {
 
             // allows this to be used inside nested functions
             const self = this;
-
+            let url = "ws://"+this.benchmark_obj.websocket_address+":"+this.benchmark_obj.websocket_port;
             // initialize websocket client
-            this.client = new WebSocketClient();
-
+            // this.client = new WebSocketClient();
+            this.times[0] = { 'start': Date.now() };
+            this.client = new WebSocket(url, { perMessageDeflate: false });
+            
             /**
              *
              * WEBSOCKET CLIENT EVENT FUNCTION
@@ -315,10 +318,10 @@ module.exports = class Connection {
             /**
              * Successful Connection Event
              */
-            this.client.on('connect', function (connection) {
-
+            this.client.on('open', function () {
+                // let connection = this.client
                 // assign connection variable to member property
-                self.connection = connection;
+                // self.connection = connection;
 
                 // increment connection counter by 1
                 self.connection_progress_obj.counter++;
@@ -329,7 +332,7 @@ module.exports = class Connection {
                 /**
                  * Connection Error Event
                  */
-                connection.on('error', function (error) {
+                this.client.on('error', function (error) {
 
                     // increment error tacker by 1
                     self.connection_errors++;
@@ -400,14 +403,14 @@ module.exports = class Connection {
             });
 
             // define the websocket server url. Ex: ws://127.0.0.1:8080
-            let url = "ws://" + this.benchmark_obj.websocket_address + ":" + this.benchmark_obj.websocket_port;
+            // let url = "ws://" + this.benchmark_obj.websocket_address + ":" + this.benchmark_obj.websocket_port;
 
             // set the first timestamp request in the times array to now, as we will be expecting a response from the
             // server once connected
-            this.times[0] = { 'start': Date.now() };
+            
 
             // connect to the websocket server
-            this.client.connect(url);
+            // this.client.connect(url);
 
         });
     }
