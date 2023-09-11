@@ -299,7 +299,7 @@ module.exports = class Connection {
                             self.last_count.push(self.count);
 
                         }, 1000);
-                        // clearInterval(finish2)
+                        clearInterval(finish2)
                         // }
                     }
 
@@ -388,6 +388,7 @@ module.exports = class Connection {
                     // let data = playerSchema.decode(message.binaryData)
                     // console.log("data received")
                     let data = JSON.parse(message.utf8Data);
+                    // console.log("first",data['c'])
                     // console.log("received data",data['c'])
                     // writeToFile(`RESPONSE RECEIVED : ${data['message_count']} \n`)
                     // console.log("DATA RECEIVED : ", data)
