@@ -145,6 +145,7 @@ module.exports = class Results {
         console.log("Longest Trip: " + longest_rt + " | Shortest Trip: " + shortest_rt + " | Average Trip: " + average_rt);
         const rate = process.env.RATE || 1000
         let data = {
+            "client-machine":"large",
             "schemapack":false,
             "clients": client_length,
             "rate": rate,
