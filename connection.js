@@ -3,11 +3,10 @@ const WebSocket = require('ws').WebSocket;
 const clientstatsd = require('./statsD')
 const sleep = require('./sleep')
 const writeToFile = require('./helper')
-const sp = require('./schemapack');
+var sp = require('./schemapack');
 require('dotenv').config()
 
-
-const playerSchema = sp.build({
+var playerSchema = sp.build({
     c: 'uint32',
     ts: 'string',
     txnTyp: 'string',
@@ -25,10 +24,10 @@ const playerSchema = sp.build({
     var: 'string',
     pdt: 'string',
     disqty: 'int16',
-    tarprc: 'float32'
-})
-
-
+    tarprc: 'float32',
+    received_time:'string'
+  });
+// let extraData = new Array(50)
 
 module.exports = class Connection {
 
@@ -146,17 +145,25 @@ module.exports = class Connection {
             // console.log("REQUEST_INTERVAL: ", this.benchmark_obj.request_interval)
             // writeToFile(`\nTOTAL_REQUEST PER CLIENT : ${this.benchmark_obj.request_interval}`)
             // send a total number of requests equal to the specified request interval
+
             let rps = process.env.RATE || 1000
+            
+            if(Math.floor(rps/20) === 0) {
+                console.error("\nRPS must be greater than 20")
+                process.exit(1)
+            }
+            // console.log(rps/20)
             let remaining = this.benchmark_obj.request_interval % rps
             let rounds = Math.ceil((this.benchmark_obj.request_interval * 20) / rps)
             // console.log("TOTAL ROUNDS : ", rounds)
             let round_no = 0
             let cnt = 0;
+            // console.log("TOTAL_ROUNDS: ",rounds," N:",Math.floor(rps/20))
             const finish2 = setInterval(() => {
                 // writeToFile(`INSIDE SETINTERVAL : client : ${clientIdx} round: ${round_no}`)
                 round_no += 1
                 // console.log("ROUND NO : ", round_no)
-                let N = rps / 20
+                let N = Math.floor(rps/20)
                 // let N = this.benchmark_obj.request_interval
 
                 // writeToFile(`EXECUTING ROUND: ${round_no} CLIENT_NO: ${clientIdx}\n`)
@@ -166,12 +173,34 @@ module.exports = class Connection {
                     // ensure the connection is defines before sending, otherwise resolve
                     if (this.connection !== undefined) {
                         // set the starting timestamp for the request to now
+                        // console.log("count: ",cnt)
                         this.times[cnt] = { 'start': Date.now() };
                         clientstatsd.timing('request_send', 1)
-                        const data = {
+                        // let data = playerSchema.encode({
+                        //     'c': cnt,
+                        //     'ts': '0',
+                        //     'txnTyp': "B",
+                        //     'exch': 'NSE',
+                        //     'qty': 1000,
+                        //     'sym': 'IDBI',
+                        //     'prc': 1011.46,
+                        //     'odTyp': 'L',
+                        //     'tag': 'Sample',
+                        //     'source': 'M',
+                        //     'mktType': 'N',
+                        //     'val': 'IOC',
+                        //     'segmt': 'EAT',
+                        //     'trprc': 1022.56,
+                        //     'var': 'AMO',
+                        //     'pdt': 'CNC',
+                        //     'disqty': 100,
+                        //     'tarprc': 1100.03,
+                        //     'received_time': '10'
+                        // });
+                        let data = JSON.stringify({
                             'c': cnt,
                             'ts': '0',
-                            'txnTyp': 'B',
+                            'txnTyp': "B",
                             'exch': 'NSE',
                             'qty': 1000,
                             'sym': 'IDBI',
@@ -181,17 +210,16 @@ module.exports = class Connection {
                             'source': 'M',
                             'mktType': 'N',
                             'val': 'IOC',
-                            'segmt': 'E',
+                            'segmt': 'EAT',
                             'trprc': 1022.56,
                             'var': 'AMO',
                             'pdt': 'CNC',
                             'disqty': 100,
-                            'tarprc': 1100.03
-                        }
-                        let buffer = playerSchema.encode(data)
-                        // console.log("buffer : ", buffer)
+                            'tarprc': 1100.03,
+                            'received_time': '10'
+                        })
+                        
                         // create a JSON string containing the current request number
-
                         // let data = JSON.stringify({
                         //     'message_count': cnt,
                         //     'key': 'websocket_key',
@@ -205,7 +233,8 @@ module.exports = class Connection {
                         // writeToFile(`SENDING REQUEST CLIENT_NO: ${clientIdx} ROUND: ${round_no} REQUEST_NO: ${i}\n`)
 
                         // send the request to the websocket server
-                        this.connection.sendUTF(buffer);
+                        // this.connection.sendUTF(data);
+                        this.connection.send(data);
 
                     } else {
                         // console.log("ENTER INSIDE RESOLVE")
@@ -261,7 +290,7 @@ module.exports = class Connection {
                             self.last_count.push(self.count);
 
                         }, 1000);
-                        clearInterval(finish2)
+                        // clearInterval(finish2)
                         // }
                     }
 
@@ -350,7 +379,10 @@ module.exports = class Connection {
                     clientstatsd.timing('response_received', 1)
                     console.log("MESSAGE", message)
                     // convert the incoming JSON string to an Object
+                    // let data = playerSchema.decode(message.binaryData)
+                    // console.log("data received")
                     let data = JSON.parse(message.utf8Data);
+                    // console.log("received data",data['c'])
                     // writeToFile(`RESPONSE RECEIVED : ${data['message_count']} \n`)
                     // console.log("DATA RECEIVED : ", data)
                     // ensure incoming message has an already existing corresponding request in the times array
@@ -364,7 +396,7 @@ module.exports = class Connection {
                             && self.times[data['c']]['finish'] === undefined) {
 
                             // store the corresponding timestamps in the times array
-                            self.times[data['c']]['received'] = data['received_time'];
+                            self.times[data['c']]['received'] = parseInt(data['received_time']);
                             self.times[data['c']]['finish'] = Date.now();
                             // console.log("START TIME: ", self.times[data['message_count']]['start'])
                             // console.log("RECEIVED TIME: ", self.times[data['message_count']]['received'])
