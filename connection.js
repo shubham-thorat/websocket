@@ -5,7 +5,7 @@ const writeToFile = require('./helper')
 require('dotenv').config()
 
 
-// let extraData = new Array(2500)
+// let extraData = new Array(50)
 
 // extraData.fill(JSON.stringify({
 //     "id": 1,
@@ -16,7 +16,7 @@ require('dotenv').config()
 //     "phone": "+1 (555) 555-5555",
 //     "is_active": "john.doe@example.com",
 // }))
-//size = 0.2 kb * 10 * 150
+//size = 0.2 kb * 10 * 50
 module.exports = class Connection {
 
     /**
@@ -135,7 +135,7 @@ module.exports = class Connection {
             // send a total number of requests equal to the specified request interval
             let rps = process.env.RATE || 1000
             let remaining = this.benchmark_obj.request_interval % rps
-            let rounds = Math.ceil(this.benchmark_obj.request_interval / rps)
+            let rounds = Math.ceil((this.benchmark_obj.request_interval * 10) / rps)
             // console.log("TOTAL ROUNDS : ", rounds)
             let round_no = 0
             let cnt = 0;
@@ -143,7 +143,7 @@ module.exports = class Connection {
                 // writeToFile(`INSIDE SETINTERVAL : client : ${clientIdx} round: ${round_no}`)
                 round_no += 1
                 // console.log("ROUND NO : ", round_no)
-                let N = rps
+                let N = rps / 10
                 // let N = this.benchmark_obj.request_interval
 
                 // writeToFile(`EXECUTING ROUND: ${round_no} CLIENT_NO: ${clientIdx}\n`)
@@ -234,7 +234,8 @@ module.exports = class Connection {
                 // if (round_no === rounds) {
                 //     clearInterval(finish)
                 // }
-            }, 1000);
+            },100);
+        // }, 1000);
 
             // sleep.sleep(1)
         });
