@@ -185,28 +185,7 @@ module.exports = class Connection {
                         // console.log("count: ",cnt)
                         this.times[cnt] = { 'start': Date.now() };
                         clientstatsd.timing('request_send', 1)
-                        // let data = playerSchema.encode({
-                        //     'c': cnt,
-                        //     'ts': '0',
-                        //     'txnTyp': "B",
-                        //     'exch': 'NSE',
-                        //     'qty': 1000,
-                        //     'sym': 'IDBI',
-                        //     'prc': 1011.46,
-                        //     'odTyp': 'L',
-                        //     'tag': 'Sample',
-                        //     'source': 'M',
-                        //     'mktType': 'N',
-                        //     'val': 'IOC',
-                        //     'segmt': 'EAT',
-                        //     'trprc': 1022.56,
-                        //     'var': 'AMO',
-                        //     'pdt': 'CNC',
-                        //     'disqty': 100,
-                        //     'tarprc': 1100.03,
-                        //     'received_time': '10'
-                        // });
-                        let data = JSON.stringify({
+                        let data = playerSchema.encode({
                             'c': cnt,
                             'ts': '0',
                             'txnTyp': "B",
@@ -226,7 +205,28 @@ module.exports = class Connection {
                             'disqty': 100,
                             'tarprc': 1100.03,
                             'received_time': '10'
-                        })
+                        });
+                        // let data = JSON.stringify({
+                        //     'c': cnt,
+                        //     'ts': '0',
+                        //     'txnTyp': "B",
+                        //     'exch': 'NSE',
+                        //     'qty': 1000,
+                        //     'sym': 'IDBI',
+                        //     'prc': 1011.46,
+                        //     'odTyp': 'L',
+                        //     'tag': 'Sample',
+                        //     'source': 'M',
+                        //     'mktType': 'N',
+                        //     'val': 'IOC',
+                        //     'segmt': 'EAT',
+                        //     'trprc': 1022.56,
+                        //     'var': 'AMO',
+                        //     'pdt': 'CNC',
+                        //     'disqty': 100,
+                        //     'tarprc': 1100.03,
+                        //     'received_time': '10'
+                        // })
                         
                         // create a JSON string containing the current request number
                         // let data = JSON.stringify({
@@ -385,9 +385,9 @@ module.exports = class Connection {
                 connection.on('message', function (message) {
                     clientstatsd.timing('response_received', 1)
                     // convert the incoming JSON string to an Object
-                    // let data = playerSchema.decode(message.binaryData)
+                    let data = playerSchema.decode(message.binaryData)
                     // console.log("data received")
-                    let data = JSON.parse(message.utf8Data);
+                    // let data = JSON.parse(message.utf8Data);
                     // console.log("first",data['c'])
                     // console.log("received data",data['c'])
                     // writeToFile(`RESPONSE RECEIVED : ${data['message_count']} \n`)
