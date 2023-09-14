@@ -1,7 +1,7 @@
 [
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 1,
     "rate": "100",
     "count": 1000,
@@ -18,7 +18,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 1,
     "rate": "100",
     "count": 1000,
@@ -35,7 +35,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 1,
     "rate": "100",
     "count": 5000,
@@ -52,7 +52,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 1,
     "rate": "100",
     "count": 10000,
@@ -69,7 +69,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 1,
     "rate": "100",
     "count": 30000,
@@ -86,7 +86,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 1,
     "rate": "500",
     "count": 30000,
@@ -103,7 +103,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 1,
     "rate": "1000",
     "count": 30000,
@@ -120,7 +120,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 1,
     "rate": "3000",
     "count": 30000,
@@ -137,7 +137,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 1,
     "rate": "3000",
     "count": 30000,
@@ -154,7 +154,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 10,
     "rate": "300",
     "count": 300000,
@@ -171,7 +171,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 1,
     "rate": "2000",
     "count": 30000,
@@ -188,7 +188,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 1,
     "rate": "2000",
     "count": 50000,
@@ -205,7 +205,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 1,
     "rate": "2000",
     "count": 50000,
@@ -222,7 +222,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 10,
     "rate": "200",
     "count": 300000,
@@ -239,7 +239,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 1,
     "rate": "5000",
     "count": 30000,
@@ -256,7 +256,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 1,
     "rate": "5000",
     "count": 30000,
@@ -273,7 +273,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 10,
     "rate": "500",
     "count": 300000,
@@ -290,7 +290,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 50,
     "rate": "100",
     "count": 1500000,
@@ -307,7 +307,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 1,
     "rate": "10000",
     "count": 30000,
@@ -324,7 +324,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 1,
     "rate": "10000",
     "count": 30000,
@@ -341,7 +341,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 1,
     "rate": "5000",
     "count": 30000,
@@ -358,7 +358,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 1,
     "rate": "5000",
     "count": 30000,
@@ -375,7 +375,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 10,
     "rate": "1000",
     "count": 300000,
@@ -392,7 +392,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 10,
     "rate": "1000",
     "count": 200000,
@@ -409,7 +409,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 100,
     "rate": "100",
     "count": 500000,
@@ -426,7 +426,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 10,
     "rate": "2000",
     "count": 50000,
@@ -443,7 +443,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 10,
     "rate": "2000",
     "count": 100000,
@@ -460,7 +460,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 10,
     "rate": "2000",
     "count": 200000,
@@ -477,7 +477,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 100,
     "rate": "200",
     "count": 500000,
@@ -494,7 +494,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 1,
     "rate": "20000",
     "count": 20000,
@@ -511,7 +511,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 1,
     "rate": "20000",
     "count": 50000,
@@ -528,7 +528,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 10,
     "rate": "2000",
     "count": 500000,
@@ -545,7 +545,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 10,
     "rate": "2000",
     "count": 200000,
@@ -562,7 +562,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 100,
     "rate": "200",
     "count": 500000,
@@ -579,7 +579,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 1,
     "rate": "50000",
     "count": 50000,
@@ -596,7 +596,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 1,
     "rate": "50000",
     "count": 50000,
@@ -613,7 +613,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 10,
     "rate": "5000",
     "count": 500000,
@@ -630,7 +630,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 10,
     "rate": "5000",
     "count": 50000,
@@ -647,7 +647,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 10,
     "rate": "5000",
     "count": 100000,
@@ -664,7 +664,7 @@
   },
   {
     "client-machine": "large",
-    "schemapack": false,
+    "schemapack": true,
     "clients": 1000,
     "rate": "50",
     "count": 800000,
